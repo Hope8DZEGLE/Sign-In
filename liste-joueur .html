@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ASR-United - Liste Officielle des Joueurs</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        /* En-tête */
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 30px;
+            background: rgba(106, 13, 173, 0.2);
+            border: 2px solid #6a0dad;
+            border-radius: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(106, 13, 173, 0.3) 0%, transparent 70%);
+            animation: pulse 4s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.5; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+        }
+
+        .jersey-icon {
+            width: 100px;
+            height: 120px;
+            margin: 0 auto 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            background: linear-gradient(45deg, #6a0dad, #9b59b6, #ffd700);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .header .subtitle {
+            color: #ffd700;
+            font-size: 1.2rem;
+            margin-top: 10px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .header .info {
+            color: #a0a0a0;
+            font-size: 0.95rem;
+            margin-top: 15px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Badge sécurisé */
+        .security-badge {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(0, 184, 148, 0.2);
+            border: 1px solid #00b894;
+            color: #00b894;
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            z-index: 100;
+        }
+
+        .logout-btn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: rgba(214, 48, 49, 0.2);
+            border: 1px solid #d63031;
+            color: #ff6b6b;
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 100;
+        }
+
+        .logout-btn:hover {
+            background: rgba(214, 48, 49, 0.4);
+            transform: translateY(-2px);
+        }
+
+        /* Table des joueurs */
+        .players-container {
+            background: rgba(255, 255, 255, 0.03);
+            border: 2px solid #6a0dad;
+            border-radius: 20px;
+            padding: 30px;
+            backdrop-filter: blur(10px);
+        }
+
+        .section-title {
+            color: #ffd700;
+            font-size: 1.5rem;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid rgba(106, 13, 173, 0.5);
+        }
+
+        .players-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .players-table thead {
+            background: rgba(106, 13, 173, 0.3);
+        }
+
+        .players-table th {
+            padding: 20px 15px;
+            text-align: left;
+            color: #ffd700;
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+        }
+
+        .players-table td {
+            padding: 18px 15px;
+            border-bottom: 1px solid rgba(106, 13, 173, 0.2);
+            color: #fff;
+        }
+
+        .players-table tr:hover {
+            background: rgba(106, 13, 173, 0.1);
+        }
+
+        .players-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Numéro de maillot */
+        .jersey-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 45px;
+            height: 45px;
+            background: linear-gradient(135deg, #6a0dad, #4a0080);
+            border: 2px solid #ffd700;
+            border-radius: 50%;
+            color: #ffd700;
+            font-weight: bold;
+            font-size: 1.1rem;
+            box-shadow: 0 5px 15px rgba(106, 13, 173, 0.4);
+        }
+
+        /* Poste */
+        .position-badge {
+            display: inline-block;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .position-gardien { background: rgba(231, 76, 60, 0.2); color: #e74c3c; border: 1px solid #e74c3c; }
+        .position-defense { background: rgba(52, 152, 219, 0.2); color: #3498db; border: 1px solid #3498db; }
+        .position-milieu { background: rgba(46, 204, 113, 0.2); color: #2ecc71; border: 1px solid #2ecc71; }
+        .position-attaque { background: rgba(241, 196, 15, 0.2); color: #f1c40f; border: 1px solid #f1c40f; }
+
+        /* Nom en gras */
+        .player-name {
+            font-weight: 600;
+            font-size: 1.05rem;
+        }
+
+        .player-firstname {
+            color: #a0a0a0;
+            font-size: 0.95rem;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 30px;
+            color: #666;
+            border-top: 1px solid rgba(106, 13, 173, 0.3);
+        }
+
+        .footer .date {
+            color: #ffd700;
+            font-weight: 600;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header h1 { font-size: 1.8rem; }
+            .players-container { padding: 20px; }
+            .players-table th, .players-table td { padding: 12px 8px; font-size: 0.9rem; }
+            .jersey-number { width: 35px; height: 35px; font-size: 0.9rem; }
+            .security-badge, .logout-btn { position: relative; top: auto; right: auto; left: auto; margin-bottom: 15px; display: inline-flex; }
+        }
+
+        /* Animation entrée */
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .players-container {
+            animation: slideIn 0.6s ease;
+        }
+    </style>
+</head>
+<body>
+    <!-- Badge de sécurité -->
+    <div class="security-badge">
+        🔒 Accès Sécurisé - <span id="sessionTime">--:--</span>
+    </div>
+
+    <!-- Bouton déconnexion -->
+    <button class="logout-btn" onclick="logout()">
+        🚪 Déconnexion
+    </button>
+
+    <div class="container">
+        <!-- En-tête -->
+        <div class="header">
+            <div class="jersey-icon">
+                <svg viewBox="0 0 200 240" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M50 40 L80 20 L120 20 L150 40 L150 80 L130 90 L130 220 L70 220 L70 90 L50 80 Z" 
+                          fill="#6a0dad" stroke="#ffd700" stroke-width="3"/>
+                    <path d="M50 40 L20 70 L40 90 L70 60" fill="#6a0dad" stroke="#ffd700" stroke-width="3"/>
+                    <path d="M150 40 L180 70 L160 90 L130 60" fill="#6a0dad" stroke="#ffd700" stroke-width="3"/>
+                    <ellipse cx="100" cy="35" rx="20" ry="10" fill="#1a1a2e" stroke="#ffd700" stroke-width="2"/>
+                    <text x="100" y="140" text-anchor="middle" fill="#ffd700" font-size="50" font-weight="bold">ASR</text>
+                    <rect x="70" y="200" width="60" height="5" fill="#ffd700"/>
+                </svg>
+            </div>
+            <h1>ASR-United</h1>
+            <p class="subtitle">🟣 Maillot Officiel Violet 🟣</p>
+            <p class="info">Salle TP1 - ASR 3 | Liste Officielle des Joueurs 2026</p>
+        </div>
+
+        <!-- Liste des joueurs -->
+        <div class="players-container">
+            <h2 class="section-title">
+                📋 Liste Complète des Joueurs
+                <span style="color: #6a0dad; font-size: 0.9rem;">(18 Joueurs)</span>
+            </h2>
+
+            <table class="players-table">
+                <thead>
+                    <tr>
+                        <th>N° Maillot</th>
+                        <th>NOM</th>
+                        <th>Prénom</th>
+                        <th>Poste</th>
+                    </tr>
+                </thead>
+                <tbody id="playersTableBody">
+                    <!-- Généré par JavaScript -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p>Document confidentiel - ASR-United</p>
+            <p>Date d'accès : <span class="date" id="accessDate">--/--/---- --:--</span></p>
+            <p style="margin-top: 10px; font-size: 0.85rem;">© 2026 ASR-United - Tous droits réservés</p>
+        </div>
+    </div>
+
+    <script>
+        // Vérifier l'accès
+        if (sessionStorage.getItem('asr_access_granted') !== 'true') {
+            window.location.href = 'login.html';
+        }
+
+        // Liste EXACTE des joueurs de l'image
+        const officialPlayers = [
+            { num: 11, nom: "ADAWOSSO", prenom: "Elie", position: "Élier-Droit", type: "attaque" },
+            { num: 1, nom: "ADJADJA", prenom: "Elom", position: "Gardien", type: "gardien" },
+            { num: 10, nom: "AKAKPO", prenom: "Hubert", position: "Milieu Offensif", type: "milieu" },
+            { num: 18, nom: "AMEYIKPO", prenom: "Gédéon", position: "Stoppeur", type: "defense" },
+            { num: 15, nom: "BEGUEMSI", prenom: "Béni", position: "Stoppeur", type: "defense" },
+            { num: 9, nom: "AYISSOU", prenom: "Nicaise", position: "De-Point", type: "attaque" },
+            { num: 21, nom: "DAKITSE-BENISSAN", prenom: "Isaac", position: "Milieu Défensif", type: "milieu" },
+            { num: 19, nom: "DZEGLE", prenom: "Hope", position: "Latéral-Gauche", type: "defense" },
+            { num: 4, nom: "ETSE", prenom: "Geoffroy", position: "Libéro", type: "defense" },
+            { num: 20, nom: "GANDA", prenom: "Wilfried", position: "Élier-Droit", type: "attaque" },
+            { num: 8, nom: "GNAGAN", prenom: "Josue", position: "Milieu Défensif", type: "milieu" },
+            { num: 7, nom: "KEGLO", prenom: "Casmir", position: "Élier-Gauche", type: "attaque" },
+            { num: 3, nom: "KOUSSOUGBO", prenom: "Hermas", position: "Latéral-Droit", type: "defense" },
+            { num: 17, nom: "OURO-AKPO", prenom: "Rayane", position: "Milieu Offensif", type: "milieu" },
+            { num: 16, nom: "SANOU", prenom: "Bénoît", position: "Gardien", type: "gardien" },
+            { num: 29, nom: "SOHE", prenom: "Godwin", position: "Élier-Gauche", type: "attaque" },
+            { num: 22, nom: "TCHANI", prenom: "Bilal", position: "Latéral-Droit", type: "defense" },
+            { num: 6, nom: "WODOME", prenom: "Octave", position: "Milieu Offensif", type: "milieu" }
+        ];
+
+        // Trier par numéro
+        officialPlayers.sort((a, b) => a.num - b.num);
+
+        // Générer le tableau
+        function generateTable() {
+            const tbody = document.getElementById('playersTableBody');
+            
+            officialPlayers.forEach(player => {
+                const row = document.createElement('tr');
+                
+                const positionClass = `position-${player.type}`;
+                
+                row.innerHTML = `
+                    <td>
+                        <span class="jersey-number">#${player.num}</span>
+                    </td>
+                    <td class="player-name">${player.nom}</td>
+                    <td class="player-firstname">${player.prenom}</td>
+                    <td>
+                        <span class="position-badge ${positionClass}">${player.position}</span>
+                    </td>
+                `;
+                
+                tbody.appendChild(row);
+            });
+        }
+
+        // Mettre à jour l'heure de session
+        function updateSessionTime() {
+            const now = new Date();
+            const timeStr = now.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+            document.getElementById('sessionTime').textContent = timeStr;
+            document.getElementById('accessDate').textContent = now.toLocaleString('fr-FR');
+        }
+
+        // Déconnexion
+        function logout() {
+            sessionStorage.removeItem('asr_access_granted');
+            sessionStorage.removeItem('asr_access_time');
+            window.location.href = 'login.html';
+        }
+
+        // Vérifier expiration (30 minutes)
+        function checkExpiration() {
+            const accessTime = sessionStorage.getItem('asr_access_time');
+            if (accessTime) {
+                const elapsed = new Date() - new Date(accessTime);
+                if (elapsed > 30 * 60 * 1000) { // 30 minutes
+                    logout();
+                }
+            }
+        }
+
+        // Initialiser
+        generateTable();
+        updateSessionTime();
+        setInterval(updateSessionTime, 1000);
+        setInterval(checkExpiration, 60000); // Vérifier toutes les minutes
+
+        // Empêcher retour arrière après déconnexion
+        window.onpageshow = function(event) {
+            if (event.persisted) {
+                window.location.reload();
+            }
+        };
+    </script>
+</body>
+</html>

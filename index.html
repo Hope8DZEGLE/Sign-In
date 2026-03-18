@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ASR-United - Accès Liste Joueurs</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .login-container {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid #6a0dad;
+            border-radius: 20px;
+            padding: 40px;
+            width: 100%;
+            max-width: 450px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 20px 60px rgba(106, 13, 173, 0.3);
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo h1 {
+            font-size: 2.5rem;
+            background: linear-gradient(45deg, #6a0dad, #9b59b6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+        }
+
+        .logo p {
+            color: #a0a0a0;
+            margin-top: 10px;
+            font-size: 0.95rem;
+        }
+
+        .jersey-preview {
+            width: 120px;
+            height: 140px;
+            margin: 0 auto 30px;
+            position: relative;
+        }
+
+        .jersey-svg {
+            width: 100%;
+            height: 100%;
+            filter: drop-shadow(0 10px 20px rgba(106, 13, 173, 0.5));
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            color: #ffd700;
+            margin-bottom: 10px;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 15px 20px;
+            border: 2px solid rgba(106, 13, 173, 0.5);
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.08);
+            color: #fff;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #6a0dad;
+            background: rgba(106, 13, 173, 0.15);
+            box-shadow: 0 0 20px rgba(106, 13, 173, 0.3);
+        }
+
+        .form-group input::placeholder {
+            color: #666;
+        }
+
+        .btn-login {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, #6a0dad, #9b59b6);
+            border: none;
+            border-radius: 12px;
+            color: #fff;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-top: 10px;
+        }
+
+        .btn-login:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(106, 13, 173, 0.4);
+        }
+
+        .error-message {
+            background: rgba(214, 48, 49, 0.2);
+            border: 1px solid #d63031;
+            color: #ff6b6b;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        .hint {
+            text-align: center;
+            color: #666;
+            font-size: 0.85rem;
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .jersey-badge {
+            position: absolute;
+            top: 35%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #ffd700;
+            font-size: 2rem;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="logo">
+            <div class="jersey-preview">
+                <svg class="jersey-svg" viewBox="0 0 200 240" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M50 40 L80 20 L120 20 L150 40 L150 80 L130 90 L130 220 L70 220 L70 90 L50 80 Z" 
+                          fill="#6a0dad" stroke="#ffd700" stroke-width="3"/>
+                    <path d="M50 40 L20 70 L40 90 L70 60" fill="#6a0dad" stroke="#ffd700" stroke-width="3"/>
+                    <path d="M150 40 L180 70 L160 90 L130 60" fill="#6a0dad" stroke="#ffd700" stroke-width="3"/>
+                    <ellipse cx="100" cy="35" rx="20" ry="10" fill="#1a1a2e" stroke="#ffd700" stroke-width="2"/>
+                    <text x="100" y="140" text-anchor="middle" fill="#ffd700" font-size="50" font-weight="bold">ASR</text>
+                    <rect x="70" y="200" width="60" height="5" fill="#ffd700"/>
+                </svg>
+            </div>
+            <h1>ASR-United</h1>
+            <p>Accès Liste Officielle des Joueurs</p>
+        </div>
+
+        <div class="error-message" id="errorMessage">
+            ⚠️ Code d'accès incorrect
+        </div>
+
+        <form id="loginForm" onsubmit="return verifyAccess(event)">
+            <div class="form-group">
+                <label for="accessCode">🔐 Code d'Accès</label>
+                <input type="password" id="accessCode" placeholder="Entrez le code secret..." required>
+            </div>
+
+            <button type="submit" class="btn-login">
+                🔓 Accéder à la Liste
+            </button>
+        </form>
+
+        <div class="hint">
+            💡 Cette page est réservée aux personnes autorisées.<br>
+            Contactez l'administrateur pour obtenir le code d'accès.
+        </div>
+    </div>
+
+    <script>
+        // Code d'accès sécurisé (vous pouvez le changer)
+        const SECRET_CODE = 'ASR2026VIOLET';
+        
+        // Vérifier si déjà connecté
+        if (sessionStorage.getItem('asr_access_granted') === 'true') {
+            window.location.href = 'liste-joueurs.html';
+        }
+
+        function verifyAccess(event) {
+            event.preventDefault();
+            
+            const inputCode = document.getElementById('accessCode').value.trim();
+            const errorDiv = document.getElementById('errorMessage');
+            
+            if (inputCode === SECRET_CODE) {
+                // Créer un token de session
+                sessionStorage.setItem('asr_access_granted', 'true');
+                sessionStorage.setItem('asr_access_time', new Date().toISOString());
+                
+                // Rediriger vers la liste
+                window.location.href = 'liste-joueurs.html';
+            } else {
+                errorDiv.classList.add('show');
+                document.getElementById('accessCode').value = '';
+                document.getElementById('accessCode').focus();
+                
+                setTimeout(() => {
+                    errorDiv.classList.remove('show');
+                }, 3000);
+            }
+            
+            return false;
+        }
+    </script>
+</body>
+</html>
